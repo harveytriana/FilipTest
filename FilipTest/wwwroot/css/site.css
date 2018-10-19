@@ -35,3 +35,30 @@ body {
         display: none;
     }
 }
+
+.btn[disabled] {
+    cursor: default !important;
+}
+
+.btn:focus, .btn:active {
+    outline: none !important;
+    box-shadow: none;
+}
+
+.S_ButtonFixedWidth {
+    width: 260px !important;
+    margin: 4px;
+}
+
+.S_inputText {
+    border: 1px solid #F0F0F0 !important;
+    outline: none !important; /* removes blue border in focus */
+    width: 240px !important;
+    padding-left: 6px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}
+
+.S_Table {
+    font-family: Courier New, Courier, monospace;
+    font-size: 12px;
+}

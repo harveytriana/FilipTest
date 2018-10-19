@@ -3,3 +3,96 @@
 }
 
 <h1>Filip Test</h1>
+
+<button id="script-test1" class="btn btn-default S_ButtonFixedWidth">GET Books</button>
+<br />
+<button id="script-test2" class="btn btn-default S_ButtonFixedWidth">GET OnlineRecord</button>
+<br />
+<button id="script-test3" class="btn btn-default S_ButtonFixedWidth">SignalR Test</button>
+<br />
+<h3>Results</h3>
+<pre id="result">
+</pre>
+
+@section scripts{
+    <!-- SIGNAL R-->
+    <script src="~/lib/signalr/signalr.js"></script>
+    <script src="~/lib/signalr/msgpack5.js"></script>
+    <script src="~/lib/signalr/signalr-protocol-msgpack.js"></script>
+    <!-- CODE -->
+    <script>
+        var result = $('#result');
+
+        $(function () {
+            $('#script-test1').click(function () {
+                getBooks();
+            });
+
+            function getBooks() {
+                $.ajax({
+                    type: 'get',
+                    dataType: 'json',
+                    url: 'home/GetBooks',
+                    success: function (data) {
+                        result.html(JSON.stringify(data, null, 2));
+                    }
+                });
+            }
+
+            $('#script-test2').click(function () {
+                getOnlineRecord();
+            });
+
+            $('#script-test3').click(function () {
+                signalRSample();
+            });
+
+            function getOnlineRecord() {
+                $.ajax({
+                    type: 'get',
+                    dataType: 'json',
+                    url: 'home/GetOnlineRecord',
+                    success: function (data) {
+                        result.html(JSON.stringify(data, null, 2));
+                    }
+                });
+            }
+
+            var _Connection = null;
+
+            function signalRSample() {
+
+                var hubUri = 'http://localhost:8066//broadcastingHub';
+
+                _Connection = new signalR.HubConnectionBuilder()
+                    .withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
+                    .withUrl(hubUri)
+                    .build();
+
+                _Connection.start()
+                    .then(function () {
+                        log('Hub is open.');
+                        //-
+                        $('#script-test3').prop('disabled', true);
+                        // call server
+                        _Connection.invoke("Sample");
+                    });
+
+                _Connection.on('RaiseSample', function (data) {
+                    result.html(JSON.stringify(data, null, 2));
+                });
+
+                _Connection.onclose(function () {
+                    log('Hub is closed.');
+                });
+            }
+
+            // works!
+            window.addEventListener("beforeunload", function (e) {
+                if (_Connection != null) {
+                    _Connection.stop();
+                }
+            });
+        });
+    </script>
+}

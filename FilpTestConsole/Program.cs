@@ -101,20 +101,13 @@ namespace FilpTestConsole
         }
     }
 
-
-
-
     [MessagePackObject]
     public class Book
     {
-        [Key(0)]
-        public string Title { get; set; }
-        [Key(1)]
-        public string Author { get; set; }
-        [Key(2)]
-        public double Price { get; set; }
-        [Key(3)]
-        public long Words { get; set; }
+        [Key(0)] public string Title { get; set; }
+        [Key(1)] public string Author { get; set; }
+        [Key(2)] public double Price { get; set; }
+        [Key(3)] public long Words { get; set; }
 
         public override string ToString()
         {

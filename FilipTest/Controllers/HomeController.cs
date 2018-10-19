@@ -39,5 +39,23 @@ namespace FilipTest.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        public JsonResult GetBooks()
+        {
+            var x = new BooksController();
+
+            var data = x.Get();
+
+            return Json(data);
+        }
+
+        public JsonResult GetOnlineRecord()
+        {
+            var x = new OnlineRecordController();
+
+            var data = x.Get();
+
+            return Json(data);
+        }
     }
 }
