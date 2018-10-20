@@ -3,12 +3,13 @@
 }
 
 <h1>Filip Test</h1>
-
 <button id="script-test1" class="btn btn-default S_ButtonFixedWidth">GET Books</button>
 <br />
 <button id="script-test2" class="btn btn-default S_ButtonFixedWidth">GET OnlineRecord</button>
 <br />
 <button id="script-test3" class="btn btn-default S_ButtonFixedWidth">SignalR Test</button>
+<br />
+<button id="script-test4" class="btn btn-default S_ButtonFixedWidth">SignalR Test (Server itseft)</button>
 <br />
 <h3>Results</h3>
 <pre id="result">
@@ -21,9 +22,10 @@
     <script src="~/lib/signalr/signalr-protocol-msgpack.js"></script>
     <!-- CODE -->
     <script>
-        var result = $('#result');
 
         $(function () {
+            var result = $('#result');
+
             $('#script-test1').click(function () {
                 getBooks();
             });
@@ -47,6 +49,10 @@
                 signalRSample();
             });
 
+            $('#script-test4').click(function () {
+                booksFromSignalR();
+            });
+
             function getOnlineRecord() {
                 $.ajax({
                     type: 'get',
@@ -57,15 +63,15 @@
                     }
                 });
             }
-
+            // #region broadcastingHub
             var _Connection = null;
 
             function signalRSample() {
 
-                var hubUri = 'http://localhost:8066//broadcastingHub';
+                var hubUri = 'http://localhost:8066/broadcastingHub';
 
                 _Connection = new signalR.HubConnectionBuilder()
-                    .withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
+                    //.withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
                     .withUrl(hubUri)
                     .build();
 
@@ -80,17 +86,55 @@
 
                 _Connection.on('RaiseSample', function (data) {
                     result.html(JSON.stringify(data, null, 2));
+                    //
                 });
 
                 _Connection.onclose(function () {
                     log('Hub is closed.');
                 });
             }
+            // #endregion
+
+            // #region BooksHub
+            var _booksHub = null;
+
+            function booksFromSignalR() {
+
+                var hubUri = '/booksHub';
+
+                _booksHub = new signalR.HubConnectionBuilder()
+                    //.withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
+                    .withUrl(hubUri)
+                    .build();
+
+                _booksHub.start()
+                    .then(function () {
+                        log('BooksHub is open.');
+                        //-
+                        $('#script-test4').prop('disabled', true);
+                        // call server
+                        //_booksHub.invoke('GetLast');
+                        _booksHub.invoke('GetNoApi');
+                    });
+
+                _booksHub.on('RaiseLast', function (data) {
+                    result.html(JSON.stringify(data, null, 2));
+                    //
+                });
+
+                _booksHub.onclose(function () {
+                    log('Hub is closed.');
+                });
+            }
+            // #endregion
 
             // works!
             window.addEventListener("beforeunload", function (e) {
                 if (_Connection != null) {
                     _Connection.stop();
+                }
+                if (_booksHub != null) {
+                    _booksHub.stop();
                 }
             });
         });

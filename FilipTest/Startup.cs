@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebApiContrib.Core.Formatter.MessagePack;
 
+using FilipTest.Hubs;
+
 // Studing:
 // https://www.strathweb.com/2017/06/using-messagepack-with-asp-net-core-mvc/
 // Complete source code
@@ -38,7 +40,10 @@ namespace FilipTest
             services
                 .AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                .AddMessagePackFormatters(); 
+                .AddMessagePackFormatters();
+
+            services.AddSignalR()
+               .AddMessagePackProtocol();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +62,11 @@ namespace FilipTest
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+            });
+
+            // SignalR (the middleware pipeline)
+            app.UseSignalR(routes => {
+                routes.MapHub<BooksHub>("/booksHub");
             });
         }
     }
