@@ -9,12 +9,12 @@ namespace FilipTest.Hubs
     {
         public async Task GetLast()
         {
-            await Clients.All.SendAsync("raiseLast", Book.Data.Last());
+            await Clients.All.SendAsync("RaiseLast", Book.Data.Last());
         }
 
         public async Task GetAll()
         {
-            await Clients.All.SendAsync("raiseAll", Book.Data);
+            await Clients.All.SendAsync("RaiseAll", Book.Data);
         }
 
         public async Task GetNoApi()
@@ -25,8 +25,7 @@ namespace FilipTest.Hubs
                 Price = 123.54,
                 Words = 982123
             };
-            await Clients.All.SendAsync("raiseLast", book);
+            await Clients.All.SendAsync("RaiseLast", book);
         }
-
     }
 }

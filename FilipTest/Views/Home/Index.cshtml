@@ -22,7 +22,6 @@
     <script src="~/lib/signalr/signalr-protocol-msgpack.js"></script>
     <!-- CODE -->
     <script>
-
         $(function () {
             var result = $('#result');
 
@@ -63,6 +62,7 @@
                     }
                 });
             }
+
             // #region broadcastingHub
             var _Connection = null;
 
@@ -71,7 +71,7 @@
                 var hubUri = 'http://localhost:8066/broadcastingHub';
 
                 _Connection = new signalR.HubConnectionBuilder()
-                    //.withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
+                    .withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
                     .withUrl(hubUri)
                     .build();
 
@@ -86,7 +86,10 @@
 
                 _Connection.on('RaiseSample', function (data) {
                     result.html(JSON.stringify(data, null, 2));
-                    //
+                    // dictionary
+                    for (var key in data.Parameters) {
+                        console.log(key + '=' + data.Parameters[key]);
+                    }
                 });
 
                 _Connection.onclose(function () {
@@ -103,7 +106,7 @@
                 var hubUri = '/booksHub';
 
                 _booksHub = new signalR.HubConnectionBuilder()
-                    //.withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
+                    .withHubProtocol(new signalR.protocols.msgpack.MessagePackHubProtocol())
                     .withUrl(hubUri)
                     .build();
 
@@ -113,13 +116,12 @@
                         //-
                         $('#script-test4').prop('disabled', true);
                         // call server
-                        //_booksHub.invoke('GetLast');
                         _booksHub.invoke('GetNoApi');
                     });
 
+                // receive from server
                 _booksHub.on('RaiseLast', function (data) {
                     result.html(JSON.stringify(data, null, 2));
-                    //
                 });
 
                 _booksHub.onclose(function () {

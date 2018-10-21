@@ -13,10 +13,4 @@
     <PackageReference Include="WebApiContrib.Core.Formatter.MessagePack" Version="2.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="MML.Shared">
-      <HintPath>..\..\LabCore21\_release\netstandard2.0\MML.Shared.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
